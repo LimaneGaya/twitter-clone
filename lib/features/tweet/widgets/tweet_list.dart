@@ -18,6 +18,12 @@ class TweetList extends ConsumerWidget {
                 if (data.events.contains(
                     'databases.*.collections.${AppwriteConstants.tweetsCollection}.documents.*.create')) {
                   tweets.insert(0, Tweet.fromMap(data.payload));
+                } else if (data.events.contains(
+                    'databases.*.collections.${AppwriteConstants.tweetsCollection}.documents.*.update')) {
+                  final newTweet = Tweet.fromMap(data.payload);
+                  final tweet = tweets
+                      .firstWhere((oldTweet) => oldTweet.id == newTweet.id);
+                  tweets[tweets.indexOf(tweet)] = newTweet;
                 }
                 return ListView.builder(
                   itemBuilder: ((BuildContext context, int index) {

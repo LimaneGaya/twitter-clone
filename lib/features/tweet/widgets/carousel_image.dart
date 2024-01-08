@@ -1,16 +1,18 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:twitter_clone/apis/storage_api.dart';
 import 'package:twitter_clone/constants/constants.dart';
 
-class CarouselImage extends StatefulWidget {
+class CarouselImage extends ConsumerStatefulWidget {
   final List<String> imageLinks;
   const CarouselImage({super.key, required this.imageLinks});
 
   @override
-  State<CarouselImage> createState() => _CarouselImageState();
+  ConsumerState<CarouselImage> createState() => _CarouselImageState();
 }
 
-class _CarouselImageState extends State<CarouselImage> {
+class _CarouselImageState extends ConsumerState<CarouselImage> {
   int _currIdx = 0;
   @override
   Widget build(BuildContext context) {
@@ -26,9 +28,16 @@ class _CarouselImageState extends State<CarouselImage> {
                     decoration:
                         BoxDecoration(borderRadius: BorderRadius.circular(25)),
                     margin: const EdgeInsets.all(10),
-                    child: Image.network(
-                      AppwriteConstants.imageUrl(link),
-                      fit: BoxFit.contain,
+                    child: FutureBuilder(
+                      future: ref.read(storageAPIProvider).getImage(link),
+                      builder: (context, snapshot) {
+                        return snapshot.hasData && snapshot.data != null
+                            ? Image.memory(
+                                snapshot.data!,
+                                fit: BoxFit.contain,
+                              )
+                            : const Center(child: CircularProgressIndicator());
+                      },
                     ),
                   );
                 },

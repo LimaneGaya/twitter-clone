@@ -33,29 +33,20 @@ class _CreateTweetScreenState extends ConsumerState<CreateTweetScreen> {
     tweetTextController.dispose();
   }
 
-  // void shareTweet() {
-  //   ref.read(tweetControllerProvider.notifier).shareTweet(
-  //         images: images,
-  //         text: tweetTextController.text,
-  //         context: context,
-  //         repliedTo: '',
-  //         repliedToUserId: '',
-  //       );
-  //   Navigator.pop(context);
-  // }
-
   void onPickImages() async {
     images = await pickImages();
     setState(() {});
   }
 
-  void shareTweet() {
-    ref.read(tweetControllerProvider.notifier).shareTweet(
+  void shareTweet() async {
+    await ref.read(tweetControllerProvider.notifier).shareTweet(
           images: images,
           text: tweetTextController.text.trim(),
           context: context,
         );
-    Navigator.of(context).pop();
+    if (mounted) {
+      Navigator.of(context).pop();
+    }
   }
 
   @override
