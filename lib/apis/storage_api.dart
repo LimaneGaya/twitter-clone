@@ -36,8 +36,9 @@ class StorageAPI {
     return _storage.getFilePreview(
       bucketId: AppwriteConstants.imagesBucket,
       fileId: id,
-      quality: 30,
+      quality: 90,
       output: 'jpg',
+      height: 400,
     );
   }
 }
