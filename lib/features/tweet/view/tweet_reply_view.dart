@@ -13,7 +13,8 @@ class TweetReplyScreen extends ConsumerWidget {
 
   final Tweet tweet;
   const TweetReplyScreen({super.key, required this.tweet});
-
+  _getCRUD(String op) =>
+      'databases.*.collections.${AppwriteConstants.tweetsCollection}.documents.*.$op';
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
@@ -24,48 +25,44 @@ class TweetReplyScreen extends ConsumerWidget {
         children: [
           TweetCard(tweet: tweet),
           ref.watch(getRepliesToTweetProvider(tweet)).when(
-                data: (tweets) {
-                  return ref.watch(getLatestTweetProvider).when(
-                        data: (data) {
-                          if (data.events.contains(
-                              'databases.*.collections.${AppwriteConstants.tweetsCollection}.documents.*.create')) {
-                            if (data.payload['repliedTo'] == tweet.id) {
-                              tweets.insert(0, Tweet.fromMap(data.payload));
-                            }
-                          } else if (data.events.contains(
-                              'databases.*.collections.${AppwriteConstants.tweetsCollection}.documents.*.update')) {
-                            if (data.payload['repliedTo'] == tweet.id) {
-                              final newTweet = Tweet.fromMap(data.payload);
-                              final tweet = tweets.firstWhere(
-                                  (oldTweet) => oldTweet.id == newTweet.id);
-                              tweets[tweets.indexOf(tweet)] = newTweet;
-                            }
+                data: (qTwts) => ref.watch(getLatestTweetProvider).when(
+                      data: (data) {
+                        final Tweet rtTwt = Tweet.fromMap(data.payload);
+                        final bool isInList = !qTwts.contains(rtTwt);
+                        if (isInList && data.payload['repliedTo'] == tweet.id) {
+                          if (data.events.contains(_getCRUD('create'))) {
+                            qTwts.insert(0, rtTwt);
+                          } else if (data.events.contains(_getCRUD('update'))) {
+                            final t =
+                                qTwts.firstWhere((twt) => twt.id == rtTwt.id);
+                            qTwts[qTwts.indexOf(t)] = rtTwt;
                           }
-                          return Expanded(
-                            child: ListView.builder(
-                              itemBuilder: ((BuildContext context, int index) {
-                                final tweet = tweets[index];
-                                return TweetCard(tweet: tweet);
-                              }),
-                              itemCount: tweets.length,
-                            ),
-                          );
-                        },
-                        error: ((error, stackTrace) =>
-                            ErrorText(error: error.toString())),
-                        loading: () {
-                          return Expanded(
-                            child: ListView.builder(
-                              itemBuilder: ((BuildContext context, int index) {
-                                final tweet = tweets[index];
-                                return TweetCard(tweet: tweet);
-                              }),
-                              itemCount: tweets.length,
-                            ),
-                          );
-                        },
-                      );
-                },
+                        }
+
+                        return Expanded(
+                          child: ListView.builder(
+                            itemBuilder: ((BuildContext context, int index) {
+                              final tweet = qTwts[index];
+                              return TweetCard(tweet: tweet);
+                            }),
+                            itemCount: qTwts.length,
+                          ),
+                        );
+                      },
+                      error: ((error, stackTrace) =>
+                          ErrorText(error: error.toString())),
+                      loading: () {
+                        return Expanded(
+                          child: ListView.builder(
+                            itemBuilder: ((BuildContext context, int index) {
+                              final tweet = qTwts[index];
+                              return TweetCard(tweet: tweet);
+                            }),
+                            itemCount: qTwts.length,
+                          ),
+                        );
+                      },
+                    ),
                 error: ((error, stackTrace) =>
                     ErrorText(error: error.toString())),
                 loading: () => const Loader(),
