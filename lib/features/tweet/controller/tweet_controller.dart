@@ -30,10 +30,6 @@ final getLatestTweetProvider = StreamProvider.autoDispose(
   (ref) => ref.watch(tweetAPIProvider).getLatestTweet(),
 );
 
-final getLatestRepliesProvider = StreamProvider.family.autoDispose(
-  (ref, String id) => ref.watch(tweetAPIProvider).getLatestTweetFrom(id),
-);
-
 class TweetController extends StateNotifier<bool> {
   final TweetAPI _tweetAPI;
   final StorageAPI _storageAPI;

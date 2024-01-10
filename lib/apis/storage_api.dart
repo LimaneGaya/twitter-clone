@@ -21,7 +21,7 @@ class StorageAPI {
       try {
         final uploadedImage = await _storage.createFile(
           bucketId: AppwriteConstants.imagesBucket,
-          fileId: 'unique()',
+          fileId: ID.unique(),
           file: InputFile.fromPath(path: file.path),
         );
         imageLinks.add(uploadedImage.$id);

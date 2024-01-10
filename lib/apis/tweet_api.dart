@@ -20,7 +20,6 @@ abstract class ITweetAPI {
   FutureEither<Document> likeTweet(Tweet tweet);
   FutureEither<Document> updateReshareCount(Tweet tweet);
   Future<List<Document>> getRepliesToTweet(Tweet tweet);
-  Stream<RealtimeMessage> getLatestTweetFrom(String id);
 }
 
 class TweetAPI implements ITweetAPI {
@@ -118,12 +117,4 @@ class TweetAPI implements ITweetAPI {
     return document.documents;
   }
 
-  @override
-  Stream<RealtimeMessage> getLatestTweetFrom(String id) {
-    return _realtime.subscribe(
-      [
-        'databases.${AppwriteConstants.databaseId}.collections.${AppwriteConstants.tweetsCollection}.documents.$id'
-      ],
-    ).stream;
-  }
 }

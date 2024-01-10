@@ -25,17 +25,21 @@ class TweetReplyScreen extends ConsumerWidget {
           TweetCard(tweet: tweet),
           ref.watch(getRepliesToTweetProvider(tweet)).when(
                 data: (tweets) {
-                  return ref.watch(getLatestRepliesProvider(tweet.id)).when(
+                  return ref.watch(getLatestTweetProvider).when(
                         data: (data) {
                           if (data.events.contains(
                               'databases.*.collections.${AppwriteConstants.tweetsCollection}.documents.*.create')) {
-                            tweets.insert(0, Tweet.fromMap(data.payload));
+                            if (data.payload['repliedTo'] == tweet.id) {
+                              tweets.insert(0, Tweet.fromMap(data.payload));
+                            }
                           } else if (data.events.contains(
                               'databases.*.collections.${AppwriteConstants.tweetsCollection}.documents.*.update')) {
-                            final newTweet = Tweet.fromMap(data.payload);
-                            final tweet = tweets.firstWhere(
-                                (oldTweet) => oldTweet.id == newTweet.id);
-                            tweets[tweets.indexOf(tweet)] = newTweet;
+                            if (data.payload['repliedTo'] == tweet.id) {
+                              final newTweet = Tweet.fromMap(data.payload);
+                              final tweet = tweets.firstWhere(
+                                  (oldTweet) => oldTweet.id == newTweet.id);
+                              tweets[tweets.indexOf(tweet)] = newTweet;
+                            }
                           }
                           return Expanded(
                             child: ListView.builder(
