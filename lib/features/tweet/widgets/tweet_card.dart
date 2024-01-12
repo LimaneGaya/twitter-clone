@@ -54,7 +54,10 @@ class TweetCard extends ConsumerWidget {
                                     children: [
                                       SvgPicture.asset(
                                         AssetsConstants.retweetIcon,
-                                        color: Pallete.greyColor,
+                                        colorFilter: const ColorFilter.mode(
+                                          Pallete.greyColor,
+                                          BlendMode.srcIn,
+                                        ),
                                         height: 18,
                                       ),
                                       const SizedBox(width: 5),
@@ -178,12 +181,20 @@ class TweetCard extends ConsumerWidget {
                                         likeBuilder: (isLiked) => isLiked
                                             ? SvgPicture.asset(
                                                 AssetsConstants.likeFilledIcon,
-                                                color: Pallete.redColor,
+                                                colorFilter:
+                                                    const ColorFilter.mode(
+                                                  Pallete.redColor,
+                                                  BlendMode.srcIn,
+                                                ),
                                               )
                                             : SvgPicture.asset(
                                                 AssetsConstants
                                                     .likeOutlinedIcon,
-                                                color: Pallete.greyColor,
+                                                colorFilter:
+                                                    const ColorFilter.mode(
+                                                  Pallete.greyColor,
+                                                  BlendMode.srcIn,
+                                                ),
                                               ),
                                         isLiked: tweet.likes
                                             .contains(currentUser.uid),

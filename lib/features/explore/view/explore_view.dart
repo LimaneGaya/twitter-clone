@@ -49,7 +49,7 @@ class _ExploreViewState extends ConsumerState<ExploreView> {
               filled: true,
               enabledBorder: searchBarStyle,
               focusedBorder: searchBarStyle,
-              hintText: 'Search Twitter',
+              hintText: 'Search Twitter Clone',
             ),
           ),
         ),
@@ -61,7 +61,7 @@ class _ExploreViewState extends ConsumerState<ExploreView> {
                     itemCount: users.length,
                     itemBuilder: (context, idx) {
                       final user = users[idx];
-                      return SearchTile(userModer: user);
+                      return SearchTile(userModel: user);
                     },
                   );
                 },

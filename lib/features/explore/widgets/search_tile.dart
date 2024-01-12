@@ -1,20 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:twitter_clone/features/user_profile/views/user_profile_view.dart';
 import 'package:twitter_clone/models/user_model.dart';
 import 'package:twitter_clone/theme/theme.dart';
 
 class SearchTile extends StatelessWidget {
-  final UserModel userModer;
-  const SearchTile({super.key, required this.userModer});
+  final UserModel userModel;
+  const SearchTile({super.key, required this.userModel});
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
+      onTap: () {
+        Navigator.of(context).push(UserProfileView.route(userModel));
+      },
       leading: CircleAvatar(
-        backgroundImage: NetworkImage(userModer.profilePicture),
+        backgroundImage: NetworkImage(userModel.profilePicture),
         radius: 30,
       ),
       title: Text(
-        userModer.name,
+        userModel.name,
         style: const TextStyle(
           fontSize: 18,
           fontWeight: FontWeight.w700,
@@ -24,14 +28,14 @@ class SearchTile extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            '@${userModer.name}',
+            '@${userModel.name}',
             style: const TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w700,
             ),
           ),
           Text(
-            userModer.bio,
+            userModel.bio,
             style: const TextStyle(
               fontSize: 16,
               color: Pallete.whiteColor,
