@@ -21,6 +21,7 @@ abstract class ITweetAPI {
   FutureEither<Document> updateReshareCount(Tweet tweet);
   Future<List<Document>> getRepliesToTweet(Tweet tweet);
   Future<Document> getTweetByID(String id);
+  Future<List<Document>> getUserTweets(String uid);
 }
 
 class TweetAPI implements ITweetAPI {
@@ -50,9 +51,12 @@ class TweetAPI implements ITweetAPI {
   @override
   Future<List<Document>> getTweets() async {
     final lis = await _db.listDocuments(
-        databaseId: AppwriteConstants.databaseId,
-        collectionId: AppwriteConstants.tweetsCollection,
-        queries: [Query.orderDesc('tweetedAt')]);
+      databaseId: AppwriteConstants.databaseId,
+      collectionId: AppwriteConstants.tweetsCollection,
+      queries: [
+        Query.orderDesc('tweetedAt'),
+      ],
+    );
     return lis.documents;
   }
 
@@ -126,5 +130,18 @@ class TweetAPI implements ITweetAPI {
       documentId: id,
     );
     return document;
+  }
+
+  @override
+  Future<List<Document>> getUserTweets(String uid) async {
+    final lis = await _db.listDocuments(
+      databaseId: AppwriteConstants.databaseId,
+      collectionId: AppwriteConstants.tweetsCollection,
+      queries: [
+        Query.equal('users', uid),
+        Query.orderDesc('tweetedAt'),
+      ],
+    );
+    return lis.documents;
   }
 }

@@ -2,7 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:twitter_clone/apis/user_api.dart';
 import 'package:twitter_clone/models/user_model.dart';
 
-final exploreControllerProvider = StateNotifierProvider(
+final exploreControllerProvider = StateNotifierProvider<ExploreNotifier, bool>(
   (ref) => ExploreNotifier(userAPI: ref.watch(userAPIProvider)),
 );
 
