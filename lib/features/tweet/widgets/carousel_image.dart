@@ -24,23 +24,14 @@ class _CarouselImageState extends ConsumerState<CarouselImage> {
               items: widget.imageLinks.map(
                 (link) {
                   return Container(
-                    decoration:
-                        BoxDecoration(borderRadius: BorderRadius.circular(25)),
-                    margin: const EdgeInsets.all(10),
-                    child: FutureBuilder(
-                      future: ref.watch(storageAPIProvider).getImage(link),
-                      builder: (context, snapshot) {
-                        return snapshot.hasData && snapshot.data != null
-                            ? Image.memory(
-                                snapshot.data!,
-                                fit: BoxFit.contain,
-                              )
-                            : const Center(
-                                child: CircularProgressIndicator(),
-                              );
-                      },
-                    ),
-                  );
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(25)),
+                      margin: const EdgeInsets.all(10),
+                      child: Image.network(
+                        link,
+                        fit: BoxFit.contain,
+                        filterQuality: FilterQuality.medium,
+                      ));
                 },
               ).toList(),
               options: CarouselOptions(

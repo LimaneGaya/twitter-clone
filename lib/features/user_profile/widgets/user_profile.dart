@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:twitter_clone/common/common.dart';
-import 'package:twitter_clone/common/loading_page.dart';
 import 'package:twitter_clone/constants/constants.dart';
 import 'package:twitter_clone/features/auth/controller/auth_controller.dart';
 import 'package:twitter_clone/features/tweet/controller/tweet_controller.dart';
 import 'package:twitter_clone/features/tweet/widgets/tweet_card.dart';
 import 'package:twitter_clone/features/user_profile/controller/user_profile_controller.dart';
+import 'package:twitter_clone/features/user_profile/views/edit_profile_view.dart';
 import 'package:twitter_clone/features/user_profile/widgets/follow_count.dart';
 import 'package:twitter_clone/models/tweet_model.dart';
 import 'package:twitter_clone/models/user_model.dart';
@@ -39,14 +39,23 @@ class UserProfile extends ConsumerWidget {
                       Positioned.fill(
                         child: user.coverPicture.isEmpty
                             ? Container(color: Pallete.blueColor)
-                            : Image.network(user.coverPicture),
+                            : Hero(
+                                tag: 'coverPic',
+                                child: Image.network(
+                                  user.coverPicture,
+                                  fit: BoxFit.fitWidth,
+                                ),
+                              ),
                       ),
                       Positioned(
                         bottom: -20,
                         left: 20,
-                        child: CircleAvatar(
-                          backgroundImage: NetworkImage(user.profilePicture),
-                          radius: 45,
+                        child: Hero(
+                          tag: 'profilePic',
+                          child: CircleAvatar(
+                            backgroundImage: NetworkImage(user.profilePicture),
+                            radius: 45,
+                          ),
                         ),
                       ),
                       Positioned(
@@ -64,11 +73,30 @@ class UserProfile extends ConsumerWidget {
                             padding: const EdgeInsets.symmetric(horizontal: 25),
                           ),
                           onPressed: () {
-                            print('something');
+                            if (currentUser.uid == user.uid) {
+                              Navigator.of(context).push(
+                                EditProfileView.route(),
+                              );
+                            }
+                            //TODO: Add Follow Code
                           },
                           child: Text(
-                            currentUser == user ? 'Edit Profile' : 'Follow',
-                            style: const TextStyle(color: Pallete.whiteColor),
+                            currentUser.uid == user.uid
+                                ? 'Edit Profile'
+                                : 'Follow',
+                            style: const TextStyle(
+                              color: Pallete.whiteColor,
+                              shadows: [
+                                Shadow(
+                                  color: Colors.black,
+                                  blurRadius: 8,
+                                ),
+                                Shadow(
+                                  color: Colors.black,
+                                  blurRadius: 8,
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
