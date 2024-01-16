@@ -77,13 +77,22 @@ class UserProfile extends ConsumerWidget {
                               Navigator.of(context).push(
                                 EditProfileView.route(),
                               );
+                            } else {
+                              ref
+                                  .read(userProfileControllerProvider.notifier)
+                                  .followUser(
+                                    user: user,
+                                    context: context,
+                                    currentUser: currentUser,
+                                  );
                             }
-                            //TODO: Add Follow Code
                           },
                           child: Text(
                             currentUser.uid == user.uid
                                 ? 'Edit Profile'
-                                : 'Follow',
+                                : currentUser.following.contains(user.uid)
+                                    ? 'Unfollow'
+                                    : 'Follow',
                             style: const TextStyle(
                               color: Pallete.whiteColor,
                               shadows: [
@@ -154,16 +163,19 @@ class UserProfile extends ConsumerWidget {
             body: ref.watch(getUserTweetsProvider(user.uid)).when(
                   data: (qTwts) => ref.watch(getLatestTweetProvider).when(
                         data: (data) {
-                          final Tweet rtTwt = Tweet.fromMap(data.payload);
-                          final bool notInList = !qTwts.contains(rtTwt);
-                          if (notInList && rtTwt.uid == user.uid) {
-                            if (data.events.contains(_getCRUD('create'))) {
-                              qTwts.insert(0, rtTwt);
-                            } else if (data.events
-                                .contains(_getCRUD('update'))) {
-                              final t =
-                                  qTwts.firstWhere((twt) => twt.id == rtTwt.id);
-                              qTwts[qTwts.indexOf(t)] = rtTwt;
+                          if (data.events.contains(
+                              'databases.*.collections.${AppwriteConstants.tweetsCollection}.documents')) {
+                            final Tweet rtTwt = Tweet.fromMap(data.payload);
+                            final bool notInList = !qTwts.contains(rtTwt);
+                            if (notInList && rtTwt.uid == user.uid) {
+                              if (data.events.contains(_getCRUD('create'))) {
+                                qTwts.insert(0, rtTwt);
+                              } else if (data.events
+                                  .contains(_getCRUD('update'))) {
+                                final t = qTwts
+                                    .firstWhere((twt) => twt.id == rtTwt.id);
+                                qTwts[qTwts.indexOf(t)] = rtTwt;
+                              }
                             }
                           }
 

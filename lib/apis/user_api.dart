@@ -8,13 +8,15 @@ import 'package:twitter_clone/core/providers.dart';
 import 'package:twitter_clone/models/user_model.dart';
 
 final userAPIProvider = Provider<UserAPI>(
-    (ref) => UserAPI(db: ref.watch(appwriteDatabaseProvider)));
+  (ref) => UserAPI(db: ref.watch(appwriteDatabaseProvider)),
+);
 
 abstract class IUserAPI {
   FutureEither<void> saveUserData(UserModel userModel);
   Future<Document> getUserData(String uid);
   Future<List<Document>> searchUserByName(String name);
   FutureEither<void> updateUserData(UserModel userModel);
+  FutureEither<void> updateUserFollowsData(UserModel userModel);
 }
 
 class UserAPI extends IUserAPI {
@@ -66,6 +68,26 @@ class UserAPI extends IUserAPI {
         collectionId: AppwriteConstants.usersCollection,
         documentId: userModel.uid,
         data: userModel.toMap(),
+      );
+      return right(null);
+    } on AppwriteException catch (e, st) {
+      return left(Failure(e.message ?? 'Something went wrong', st));
+    } catch (e, st) {
+      return left(Failure(e.toString(), st));
+    }
+  }
+
+  @override
+  FutureEither<void> updateUserFollowsData(UserModel userModel) async {
+    try {
+      await _db.updateDocument(
+        databaseId: AppwriteConstants.databaseId,
+        collectionId: AppwriteConstants.usersCollection,
+        documentId: userModel.uid,
+        data: {
+          'followers': userModel.followers,
+          'following': userModel.following,
+        },
       );
       return right(null);
     } on AppwriteException catch (e, st) {

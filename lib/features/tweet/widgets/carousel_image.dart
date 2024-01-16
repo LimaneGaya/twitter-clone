@@ -1,7 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:twitter_clone/apis/storage_api.dart';
 
 class CarouselImage extends ConsumerStatefulWidget {
   final List<String> imageLinks;

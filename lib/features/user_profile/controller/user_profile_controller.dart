@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:twitter_clone/apis/storage_api.dart';
@@ -62,5 +61,27 @@ class UserProfileNotifier extends StateNotifier<bool> {
       (l) => showSnackBar(context, l.message),
       (r) => Navigator.pop(context),
     );
+  }
+
+  void followUser({
+    required UserModel user,
+    required BuildContext context,
+    required UserModel currentUser,
+  }) async {
+    if (currentUser.following.contains(user.uid)) {
+      user.followers.remove(currentUser.uid);
+      currentUser.following.remove(user.uid);
+    } else {
+      user.followers.add(currentUser.uid);
+      currentUser.following.add(user.uid);
+    }
+    final ref = await _userAPI.updateUserFollowsData(user);
+    ref.fold((l) => showSnackBar(context, l.message), (r) async {
+      final res = await _userAPI.updateUserFollowsData(currentUser);
+      res.fold(
+        (l) => showSnackBar(context, l.message),
+        (r) => null,
+      );
+    });
   }
 }

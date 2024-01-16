@@ -26,6 +26,14 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
   File? profileImage;
 
   @override
+  void initState() {
+    super.initState();
+    nameController.text =
+        ref.read(currentUserDetailsProvider).value?.name ?? '';
+    bioController.text = ref.read(currentUserDetailsProvider).value?.bio ?? '';
+  }
+
+  @override
   void dispose() {
     nameController.dispose();
     bioController.dispose();

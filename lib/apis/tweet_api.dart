@@ -64,7 +64,8 @@ class TweetAPI implements ITweetAPI {
   Stream<RealtimeMessage> getLatestTweet() {
     return _realtime.subscribe(
       [
-        'databases.${AppwriteConstants.databaseId}.collections.${AppwriteConstants.tweetsCollection}.documents'
+        'databases.${AppwriteConstants.databaseId}.collections.${AppwriteConstants.tweetsCollection}.documents',
+        'databases.${AppwriteConstants.databaseId}.collections.${AppwriteConstants.usersCollection}.documents',
       ],
     ).stream;
   }
