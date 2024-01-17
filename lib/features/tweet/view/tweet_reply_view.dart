@@ -27,15 +27,20 @@ class TweetReplyScreen extends ConsumerWidget {
           ref.watch(getRepliesToTweetProvider(tweet)).when(
                 data: (qTwts) => ref.watch(getLatestTweetProvider).when(
                       data: (data) {
-                        final Tweet rtTwt = Tweet.fromMap(data.payload);
-                        final bool isInList = !qTwts.contains(rtTwt);
-                        if (isInList && data.payload['repliedTo'] == tweet.id) {
-                          if (data.events.contains(_getCRUD('create'))) {
-                            qTwts.insert(0, rtTwt);
-                          } else if (data.events.contains(_getCRUD('update'))) {
-                            final t =
-                                qTwts.firstWhere((twt) => twt.id == rtTwt.id);
-                            qTwts[qTwts.indexOf(t)] = rtTwt;
+                        if (data.events.contains(
+                            'databases.*.collections.${AppwriteConstants.tweetsCollection}.documents.*.create')) {
+                          final Tweet rtTwt = Tweet.fromMap(data.payload);
+                          final bool isInList = !qTwts.contains(rtTwt);
+                          if (isInList &&
+                              data.payload['repliedTo'] == tweet.id) {
+                            if (data.events.contains(_getCRUD('create'))) {
+                              qTwts.insert(0, rtTwt);
+                            } else if (data.events
+                                .contains(_getCRUD('update'))) {
+                              final t =
+                                  qTwts.firstWhere((twt) => twt.id == rtTwt.id);
+                              qTwts[qTwts.indexOf(t)] = rtTwt;
+                            }
                           }
                         }
 
@@ -76,6 +81,7 @@ class TweetReplyScreen extends ConsumerWidget {
           text: value,
           context: context,
           repliedTo: tweet.id,
+          repliedToUserId: tweet.uid,
         ),
         decoration: const InputDecoration(
           hintText: 'Tweet your reply',

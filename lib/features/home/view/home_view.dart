@@ -66,7 +66,7 @@ class _HomeViewState extends State<HomeView> {
             ),
           ),
           BottomNavigationBarItem(
-            label: 'Search',
+            label: 'Notifications',
             icon: SvgPicture.asset(
               _page == 2
                   ? AssetsConstants.notifFilledIcon

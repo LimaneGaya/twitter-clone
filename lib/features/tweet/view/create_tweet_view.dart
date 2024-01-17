@@ -44,6 +44,7 @@ class _CreateTweetScreenState extends ConsumerState<CreateTweetScreen> {
           text: tweetTextController.text.trim(),
           context: context,
           repliedTo: '',
+          repliedToUserId: '',
         );
     if (mounted) {
       Navigator.of(context).pop();

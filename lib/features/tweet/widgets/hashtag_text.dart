@@ -1,4 +1,6 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:twitter_clone/features/hashtags_search_screen.dart';
 import 'package:twitter_clone/theme/theme.dart';
 
 class HashtagText extends StatelessWidget {
@@ -12,6 +14,11 @@ class HashtagText extends StatelessWidget {
       if (element.startsWith('#')) {
         textSpan.add(
           TextSpan(
+            recognizer: TapGestureRecognizer()
+              ..onTap = () => Navigator.push(
+                    context,
+                    SearchHastagView.route(element),
+                  ),
             text: '$element ',
             style: const TextStyle(
               color: Pallete.blueColor,
