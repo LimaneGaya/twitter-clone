@@ -90,6 +90,16 @@ class TweetCard extends ConsumerWidget {
                                         ),
                                       ),
                                     ),
+                                    if (user.isTwitterBlue)
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(right: 2.0),
+                                        child: SvgPicture.asset(
+                                          AssetsConstants.verifiedIcon,
+                                          height: 20,
+                                          width: 20,
+                                        ),
+                                      ),
                                     Text(
                                       '@${user.name} - ${format(tweet.tweetedAt, locale: 'en_short')}',
                                       style: const TextStyle(

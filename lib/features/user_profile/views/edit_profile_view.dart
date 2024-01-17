@@ -70,12 +70,6 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
               actions: [
                 OutlinedButton(
                   onPressed: () {
-                    ref.read(storageAPIProvider).deleteAllFiles();
-                  },
-                  child: const Text('del All Files'),
-                ),
-                OutlinedButton(
-                  onPressed: () {
                     ref
                         .read(userProfileControllerProvider.notifier)
                         .updateUserProfile(

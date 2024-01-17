@@ -19,6 +19,7 @@ abstract class IAuthAPI {
     required String password,
   });
   Future<User?> currentUserAccount();
+  FutureEither<void> logout();
 }
 
 class AuthAPI implements IAuthAPI {
@@ -66,6 +67,18 @@ class AuthAPI implements IAuthAPI {
         password: password,
       );
       return right(account);
+    } on AppwriteException catch (e, stacktrace) {
+      return left(Failure(e.message ?? 'An error has occured', stacktrace));
+    } catch (e, stackTrace) {
+      return left(Failure(e.toString(), stackTrace));
+    }
+  }
+
+  @override
+  FutureEither<void> logout() async {
+    try {
+      await _account.deleteSession(sessionId: 'current');
+      return right(null);
     } on AppwriteException catch (e, stacktrace) {
       return left(Failure(e.message ?? 'An error has occured', stacktrace));
     } catch (e, stackTrace) {

@@ -105,4 +105,15 @@ class AuthController extends StateNotifier<bool> {
     final updatedUser = UserModel.fromMap(document.data);
     return updatedUser;
   }
+
+  Future<void> logout(BuildContext context) async {
+    final res = await _authAPI.logout();
+    res.fold((l) => null, (r) {
+      Navigator.pushAndRemoveUntil(
+        context,
+        LogInView.route(),
+        (route) => false,
+      );
+    });
+  }
 }
